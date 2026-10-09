@@ -1,0 +1,25 @@
+name: Validate installer
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rime-deployment:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl librime-bin librime-data
+      - name: Check Bash syntax
+        run: |
+          bash -n install-dayi-rime.sh
+          bash -n tests/test-installer.sh
+      - name: Test isolated RIME deployment twice
+        run: bash tests/test-installer.sh
